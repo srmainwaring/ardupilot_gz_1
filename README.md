@@ -4,8 +4,8 @@ Adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz
 
 ## Included packages
 
-* `ardupilot_gz_description` - Contains the sdf description of the simulated
-  system and any other assets.
+* `ardupilot_gz_description` - Contains the SDF description of the simulated
+  system.
 
 * `ardupilot_gz_gazebo` - Contains Gazebo specific code and configurations such
   as system plugins.
@@ -39,7 +39,7 @@ Adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz
 1. Clone the project:
 
     ```
-    TBC
+    git clone https://github.com/srmainwaring/ardupilot_gz.git
     ```
 
 1. Set the Gazebo version to Garden:
@@ -100,7 +100,7 @@ Adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz
 
 ## Notes
 
-1. Additional dependency
+1. Additional dependencies
 
     `ros_gz` has a dependency on `gps_msgs` included in
 
@@ -111,7 +111,7 @@ Adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz
     Add `COLCON_IGNORE` to `gpsd_client` as this package is not required and
     will not build on macOS. 
 
-1. sdformat_urdf
+2. sdformat_urdf
 
     On macOS the `robot_state_publisher` node cannot load the
     `sdformat_urdf_plugin` plugin unless the
@@ -122,7 +122,32 @@ Adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz
     ln -s libsdformat_urdf_plugin.so libsdformat_urdf_plugin.dylib
     ```
 
-1. Model URIs
+3. Model URIs
 
-    The `<uri>` element must use the `package` prefix for resource to be located
-    by RViz.
+    The `sdformat_urdf` plugin requires that the `<uri>` element use
+    the `package` prefix for a resource to be located by RViz.
+
+    Ensure the environment variable `SDF_PATH` is set:
+    
+    ```bash
+    export SDF_PATH=$GZ_SIM_RESOURCE_PATH
+    ```
+
+    This is checked in the launch file as `SDF_PATH` is not usually set
+    by the `ament` environment hooks. 
+
+4. SDFormat environment variables
+
+      - SDF_PROTOCOL_VERSION
+      - SDF_VERSION
+      - SDF_MAJOR_VERSION
+      - SDF_MINOR_VERSION
+      - SDF_PATCH_VERSION
+      - SDF_PKG_VERSION
+      - SDF_VERSION_FULL
+      - SDF_VERSION_NAMESPACE
+      - SDF_VERSION_HEADER
+      - SDF_SHARE_PATH = CMAKE_INSTALL_FULL_DATAROOTDIR
+      - SDF_VERSION_PATH
+      - SDF_PATH - set to GZ_SIM_RESOURCE_PATH
+
