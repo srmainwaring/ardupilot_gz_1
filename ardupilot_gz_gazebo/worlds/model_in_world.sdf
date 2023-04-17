@@ -1,0 +1,226 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="map">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="model_in_world">
+      <pose>0 0 0.5 0 0 0</pose>
+
+      <link name="base_link">
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166</iyy>
+            <iyz>0</iyz>
+            <izz>0.166</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+
+      <link name="part_link">
+        <pose>0 0 1.0 0 0 0</pose>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166</iyy>
+            <iyz>0</iyz>
+            <izz>0.166</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="part_joint" type="revolute">
+        <parent>base_link</parent>
+        <child>part_link</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+        </axis>
+      </joint>
+
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+      </plugin>
+
+      <plugin
+        filename="gz-sim-pose-publisher-system"
+        name="gz::sim::systems::PosePublisher">
+        <publish_link_pose>true</publish_link_pose>
+        <publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>true</use_pose_vector_msg>
+        <static_publisher>true</static_publisher>
+        <static_update_frequency>1</static_update_frequency>
+      </plugin>
+
+      <plugin
+        filename="gz-sim-odometry-publisher-system"
+        name="gz::sim::systems::OdometryPublisher">
+        <odom_frame>model_in_world/odom</odom_frame>
+        <robot_base_frame>model_in_world</robot_base_frame>
+        <odom_topic>/model/model_in_world/odometry</odom_topic>
+        <tf_topic>/model/model_in_world/pose</tf_topic>
+        <dimensions>3</dimensions>
+      </plugin>
+
+    </model>
+
+  </world>
+</sdf>
+
+<!-- 
+  1. Status: OK
+  PosePublisher: 
+  //publish_link_pose/true
+  //static_publisher/false
+
+  TF Frames:
+  model_in_world
+  model_in_world/base_link
+  model_in_world/part_link
+
+  2. Status: OK
+  PosePublisher: 
+  //publish_link_pose/true
+  //publish_model_pose/true   NEW
+  //static_publisher/false
+
+  TF Frames:
+  model_in_world
+  model_in_world/base_link
+  model_in_world/part_link
+
+  3. Status: OK
+  PosePublisher: 
+  //publish_link_pose/true
+  //publish_model_pose/true
+  //static_publisher/true     NEW
+
+  TF Frames:
+  model_in_world
+  model_in_world/base_link
+  model_in_world/part_link
+
+  4. Status: OK
+  PosePublisher: 
+  //publish_link_pose/true
+  //publish_model_pose/true
+  //static_publisher/true
+
+  OdometryPublisher:          NEW
+  //odom_frame/model_in_world/odom
+  //robot_base_frame/model_in_world               NOTE!
+  //odom_topic//model/model_in_world/odometry
+  //tf_topic/model/model_in_world/pose
+  //dimensions/3
+
+  TF Frames:
+  model_in_world/odom
+  model_in_world
+  model_in_world/base_link
+  model_in_world/part_link
+ -->

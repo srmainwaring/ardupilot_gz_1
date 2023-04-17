@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+    <model name="part">
+      <link name="part_link">
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166</iyy>
+            <iyz>0</iyz>
+            <izz>0.166</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+</sdf>

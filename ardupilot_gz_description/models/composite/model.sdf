@@ -1,0 +1,103 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+    <model name="composite">
+      <link name="base_link">
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166</iyy>
+            <iyz>0</iyz>
+            <izz>0.166</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+
+      <include merge="true">
+        <uri>package://ardupilot_gz_description/models/part</uri>
+        <pose>0 0 1.0 0 0 0</pose>
+      </include>
+
+      <!-- <link name="part_link">
+        <pose>0 0 1.0 0 0 0</pose>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166</iyy>
+            <iyz>0</iyz>
+            <izz>0.166</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link> -->
+
+      <joint name="part_joint" type="revolute">
+        <parent>base_link</parent>
+        <child>part_link</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+        </axis>
+      </joint>
+
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+      </plugin>
+
+      <plugin
+        filename="gz-sim-pose-publisher-system"
+        name="gz::sim::systems::PosePublisher">
+        <publish_link_pose>true</publish_link_pose>
+        <publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>true</use_pose_vector_msg> 
+        <static_publisher>true</static_publisher>
+        <static_update_frequency>1</static_update_frequency>
+      </plugin>
+
+      <plugin
+        filename="gz-sim-odometry-publisher-system"
+        name="gz::sim::systems::OdometryPublisher">
+        <odom_frame>composite/odom</odom_frame>
+        <robot_base_frame>composite</robot_base_frame>
+        <odom_topic>/model/composite/odometry</odom_topic>
+        <tf_topic>/model/composite/pose</tf_topic>
+        <dimensions>3</dimensions>
+      </plugin>
+
+    </model>
+</sdf>

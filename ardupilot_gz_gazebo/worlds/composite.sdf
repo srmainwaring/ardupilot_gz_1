@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="map">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- <include>
+      <uri>package://ardupilot_gz_description/models/composite</uri>
+      <name>composite</name>
+      <pose>0 0 0.5 0 0 0</pose>
+    </include> -->
+
+  </world>
+</sdf>
+
+<!-- 
+Guide to assembling nesting models in Gazebo for use in ROS 2
+
+Issues:
+
+- Using <include merge="true">.
+- Naming elements: <model>, <link>, <joint>, <visual>, <collision>.
+- Scoping rules.
+- Disconnected TF tree.
+- Configure JointState.
+- Configure PosePublisher.
+- Configure OdometryPublisher.
+- Remapping model:// to package://
+
+Examples:
+
+<plugin
+  filename="gz-sim-pose-publisher-system"
+  name="gz::sim::systems::PosePublisher">
+  <publish_link_pose>true</publish_link_pose>
+  <publish_sensor_pose>true</publish_sensor_pose>
+  <publish_model_pose>true</publish_model_pose>
+  <publish_nested_model_pose>true</publish_nested_model_pose>
+  <use_pose_vector_msg>true</use_pose_vector_msg>
+  <update_frequency>60</update_frequency>
+  <static_publisher>true</static_publisher>
+  <static_update_frequency>1</static_update_frequency>
+</plugin>
+
+<plugin
+  filename="gz-sim-odometry-publisher-system"
+  name="gz::sim::systems::OdometryPublisher">
+  <odom_frame>{name_of_model}/odom</odom_frame>
+  <robot_base_frame>{name_of_model}/base_footprint</robot_base_frame>
+  <odom_topic>/model/{name_of_model}/odometry</odom_topic>
+  <tf_topic>/model/{name_of_model}/pose</tf_topic>
+  <dimensions>3</dimensions>
+</plugin>
+
+ -->
+
